@@ -1,23 +1,18 @@
-﻿using Nancy;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Abalon.Server.Core.Info;
+﻿using System.Linq;
 using Abalon.Server.Services.Impl;
-using Nancy.ModelBinding;
+using Nancy;
 
-namespace Abalon.Server
+namespace Abalon.Server.Modules
 {
 	public class RoomModule : NancyModule
 	{
-		private SiteController siteController;
-		public RoomModule(SiteController controller)
+		private readonly RoomController roomController;
+		public RoomModule(RoomController controller)
 		{
-			siteController = controller;
+			roomController = controller;
 			Post["/room/create"] = par =>
 			{
-				Room created = siteController.CreateRoom((string) Request.Session["Key"]);
+				Room created = roomController.CreateRoom((string) Request.Session["Key"]);
 				if (created == null)
 					return HttpStatusCode.BadRequest;
 				return created.RoomID;
@@ -25,8 +20,19 @@ namespace Abalon.Server
 
 			Post["/room/destroy"] = par =>
 			{
-				bool result = siteController.DestroyRoom((string) Request.Session["Key"]);
+				bool result = roomController.DestroyRoom((string) Request.Session["Key"]);
 				return result ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
+			};
+
+			Get["/room/list"] = par =>
+			{
+				return roomController.Rooms.Select(r => r.RoomID).Aggregate((a, b) => a + ", " + b);
+			};
+
+			Get["/room/info/{uid}"] = par =>
+			{
+				Room room = roomController[par.uid];
+				return string.Format("{0}, {1}, {2}", room.RoomID, room.Creator.Name, (room.Guest == null ? "null" : room.Guest.Name));
 			};
 		}
 	}

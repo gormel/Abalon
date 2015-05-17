@@ -13,7 +13,7 @@ namespace Abalon.Server
 
 	public class MainClass : NancyModule
 	{
-		public MainClass(SiteController siteController)
+		public MainClass(PlayerController playerController)
 		{
 			Get["/"] = p => Response.AsFile("Content/index.html", "text/html");
 		}

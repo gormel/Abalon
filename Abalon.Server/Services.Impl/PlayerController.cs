@@ -9,13 +9,11 @@ using Abalon.Server.Core.Info;
 
 namespace Abalon.Server.Services.Impl
 {
-	public class SiteController
+	public class PlayerController
 	{
 		readonly ConcurrentDictionary<string, Player> players = new ConcurrentDictionary<string, Player>();
-		readonly ConcurrentDictionary<string, Room> rooms = new ConcurrentDictionary<string, Room>();
 
 		public IEnumerable<Player> ConnectedPlayers { get { return players.Values; } }
-		public IEnumerable<Room> Rooms { get { return rooms.Values; } }
 
 		public Player AddConnectedPlayer(AuthInfo info, string uid)
 		{
@@ -33,33 +31,6 @@ namespace Abalon.Server.Services.Impl
 			return players.TryRemove(uid, out v);
 		}
 
-		public Room CreateRoom(string uid)
-		{
-			if (!LoggedIn(uid))
-				return null;
-			string roomID;
-			do
-			{
-				roomID = GenerateLogID();
-			} while (rooms.ContainsKey(roomID));
-			Room room = new Room()
-			{
-				Creator = players[uid],
-				RoomID = roomID
-			};
-			rooms.TryAdd(uid, room);
-			return room;
-		}
-
-		public bool DestroyRoom(string uid)
-		{
-			if (!LoggedIn(uid))
-				return false;
-			Room room = Rooms.First(r => r.Creator.UID == uid);
-			Room val;
-			return rooms.TryRemove(room.RoomID, out val);
-		}
-
 		private readonly RandomNumberGenerator rng = new RNGCryptoServiceProvider();
 		public string GenerateLogID()
 		{
@@ -71,6 +42,11 @@ namespace Abalon.Server.Services.Impl
 		public bool LoggedIn(string uid)
 		{
 			return players.ContainsKey(uid);
+		}
+
+		public Player this[string uid]
+		{
+			get { return players[uid]; }
 		}
 	}
 }

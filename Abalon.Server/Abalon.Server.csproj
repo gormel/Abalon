@@ -58,7 +58,8 @@
     <Compile Include="Core\Room.cs" />
     <Compile Include="Modules\RoomModule.cs" />
     <Compile Include="Core\Info\AuthInfo.cs" />
-    <Compile Include="Services.Impl\SiteController.cs" />
+    <Compile Include="Services.Impl\RoomController.cs" />
+    <Compile Include="Services.Impl\PlayerController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

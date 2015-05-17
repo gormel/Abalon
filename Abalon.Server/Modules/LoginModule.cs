@@ -1,27 +1,23 @@
-﻿using Abalon.Server.Services;
-using Nancy;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Web;
-using Abalon.Server.Core;
 using Abalon.Server.Core.Info;
 using Abalon.Server.Services.Impl;
+using Nancy;
 using Nancy.ModelBinding;
 
-namespace Abalon.Server
+namespace Abalon.Server.Modules
 {
 	public class LoginModule : NancyModule
 	{
-		readonly SiteController siteController;
+		readonly PlayerController playerController;
 
-		public LoginModule(SiteController siteController)
+		public LoginModule(PlayerController playerController)
 		{
-			this.siteController = siteController;
+			this.playerController = playerController;
 			Post["/login"] = par =>
 			{
 				var info = this.Bind<AuthInfo>();
-				var pl = siteController.AddConnectedPlayer(info, (string)Request.Session["Key"]);
+				var pl = playerController.AddConnectedPlayer(info, (string)Request.Session["Key"]);
 				if (pl == null)
 					return HttpStatusCode.Unauthorized;
 				return HttpStatusCode.OK;
@@ -29,14 +25,22 @@ namespace Abalon.Server
 
 			Post["/logout"] = par =>
 			{
-				bool logoutResult = siteController.RemoveDisconnectedPlayer((string)Request.Session["Key"]);
+				bool logoutResult = playerController.RemoveDisconnectedPlayer((string)Request.Session["Key"]);
 				return logoutResult ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
 			};
 
 			Get["/list"] = p =>
 			{
 				return string.Join(Environment.NewLine,
-					siteController.ConnectedPlayers.Select(pl => pl.Name));
+					playerController.ConnectedPlayers.Select(pl => pl.Name));
+			};
+
+			Get["/user/info/{name}"] = par =>
+			{
+				Player player = playerController.ConnectedPlayers.FirstOrDefault(p => p.Name == par.name);
+				if (player == null)
+					return HttpStatusCode.Unauthorized;
+				return string.Format("{0}", player.Name);
 			};
 		}
 	}
