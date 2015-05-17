@@ -1,4 +1,2 @@
 # Abalon
-Abalon game
-hulhu
-khjuikh;
+Abalon game web implementation.
