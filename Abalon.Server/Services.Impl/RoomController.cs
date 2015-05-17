@@ -19,10 +19,10 @@ namespace Abalon.Server.Services.Impl
 			this.playerController = playerController;
 		}
 
-		public Room CreateRoom(string uid)
+		public Room CreateRoom(Player player)
 		{
-			if (!playerController.LoggedIn(uid))
-				return null;
+			if (player == null)
+				throw new ArgumentNullException("player");
 			string roomID;
 			do
 			{
@@ -30,18 +30,18 @@ namespace Abalon.Server.Services.Impl
 			} while (rooms.ContainsKey(roomID));
 			Room room = new Room()
 			{
-				Creator = playerController[uid],
+				Creator = player,
 				RoomID = roomID
 			};
-			rooms.TryAdd(uid, room);
+			rooms.TryAdd(roomID, room);
 			return room;
 		}
 
-		public bool DestroyRoom(string uid)
+		public bool DestroyRoom(Player player)
 		{
-			if (!playerController.LoggedIn(uid))
-				return false;
-			Room room = Rooms.First(r => r.Creator.UID == uid);
+			if (player == null)
+				throw new ArgumentNullException("player");
+			Room room = Rooms.First(r => r.Creator == player);
 			Room val;
 			return rooms.TryRemove(room.RoomID, out val);
 		}

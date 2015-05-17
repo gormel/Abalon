@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Web;
 using Abalon.Server.Core;
 using Abalon.Server.Core.Info;
+using Nancy.Session;
 
 namespace Abalon.Server.Services.Impl
 {
@@ -47,6 +48,11 @@ namespace Abalon.Server.Services.Impl
 		public Player this[string uid]
 		{
 			get { return players[uid]; }
+		}
+
+		public Player this[ISession session]
+		{
+			get { return this[(string)session["SessionUID"]]; }
 		}
 	}
 }

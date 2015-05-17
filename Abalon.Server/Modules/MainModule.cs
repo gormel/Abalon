@@ -1,9 +1,6 @@
-﻿using System;
-using System.Linq;
-using Abalon.Server.Services.Impl;
-using Nancy;
+﻿using Nancy;
 
-namespace Abalon.Server
+namespace Abalon.Server.Modules
 {
 	internal enum Players
 	{
@@ -11,9 +8,9 @@ namespace Abalon.Server
 		White
 	}
 
-	public class MainClass : NancyModule
+	public class MainModule : NancyModule
 	{
-		public MainClass(PlayerController playerController)
+		public MainModule()
 		{
 			Get["/"] = p => Response.AsFile("Content/index.html", "text/html");
 		}

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Abalon.Server.Core.Info;
 using Abalon.Server.Services.Impl;
 using Nancy;
@@ -7,9 +6,14 @@ using Nancy.ModelBinding;
 
 namespace Abalon.Server.Modules
 {
-	public class LoginModule : NancyModule
+	public sealed class LoginModule : NancyModule
 	{
-		readonly PlayerController playerController;
+		private readonly PlayerController playerController;
+
+		private string SessionID
+		{
+			get { return (string) Request.Session["SessionUID"]; }
+		}
 
 		public LoginModule(PlayerController playerController)
 		{
@@ -25,7 +29,7 @@ namespace Abalon.Server.Modules
 
 			Post["/logout"] = par =>
 			{
-				bool logoutResult = playerController.RemoveDisconnectedPlayer((string)Request.Session["SessionUID"]);
+				bool logoutResult = playerController.RemoveDisconnectedPlayer(SessionID);
 				return logoutResult ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
 			};
 
@@ -41,6 +45,8 @@ namespace Abalon.Server.Modules
 				if (player == null) { return HttpStatusCode.Unauthorized; }
 				return new { name = player.Name };
 			};
+
+			Get["/user/status"] = par => new { loggedIn = playerController.LoggedIn(SessionID) };
 		}
 	}
 }

@@ -1,12 +1,8 @@
-﻿using Abalon.Server.Services;
+﻿using System;
 using Abalon.Server.Services.Impl;
 using Nancy;
-using Nancy.Hosting.Self;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using Nancy.Bootstrapper;
+using Nancy.Hosting.Self;
 using Nancy.Session;
 using Nancy.TinyIoc;
 using Newtonsoft.Json;
@@ -20,9 +16,9 @@ namespace Abalon.Server
 		{
 			var uri = new Uri("http://localhost:8080");
 			var bootstrapper = new Bootstrapper();
-			var hostConfig = new HostConfiguration()
+			var hostConfig = new HostConfiguration
 			{
-				UrlReservations = new UrlReservations() { CreateAutomatically = true }
+				UrlReservations = new UrlReservations { CreateAutomatically = true }
 			};
 
 			using (var host = new NancyHost(uri, bootstrapper, hostConfig))
