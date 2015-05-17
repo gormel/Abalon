@@ -40,7 +40,8 @@ namespace Abalon.Server
 		{
 			base.ConfigureApplicationContainer(container);
 			container.Register<JsonSerializer, CustomJsonSerializer>();
-			container.Register<SiteController>().AsSingleton();
+			container.Register<PlayerController>().AsSingleton();
+			container.Register<RoomController>().AsSingleton();
 		}
 
 		protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)

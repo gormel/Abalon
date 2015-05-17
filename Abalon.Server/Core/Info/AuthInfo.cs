@@ -1,4 +1,4 @@
-﻿namespace Abalon.Server.Core
+﻿namespace Abalon.Server.Core.Info
 {
 	public class AuthInfo
 	{

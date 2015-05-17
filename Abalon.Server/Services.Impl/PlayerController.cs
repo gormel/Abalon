@@ -5,23 +5,24 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Web;
 using Abalon.Server.Core;
+using Abalon.Server.Core.Info;
 
 namespace Abalon.Server.Services.Impl
 {
-	public class SiteController
+	public class PlayerController
 	{
 		readonly ConcurrentDictionary<string, Player> players = new ConcurrentDictionary<string, Player>();
-		readonly List<Room> rooms = new List<Room>();
 
 		public IEnumerable<Player> ConnectedPlayers { get { return players.Values; } }
-		public IReadOnlyList<Room> Rooms { get { return rooms; } }
 
 		public Player AddConnectedPlayer(AuthInfo info)
 		{
 			//TODO: password check
-			Player result = new Player() { Name = info.Name, UID = GenerateLogID() };
-			players.TryAdd(result.UID, result);
-			return result;
+			if (ConnectedPlayers.Any(p => p.Name == info.Name))
+				return null;
+			Player result = new Player() {Name = info.Name, UID = GenerateLogID()};
+			bool res = players.TryAdd(result.UID, result);
+			return res ? result : null;
 		}
 
 		public bool RemoveDisconnectedPlayer(string uid)
@@ -36,6 +37,16 @@ namespace Abalon.Server.Services.Impl
 			byte[] tokenData = new byte[32];
 			rng.GetBytes(tokenData);
 			return string.Concat(tokenData.Select(b => b.ToString("X2")));
+		}
+
+		public bool LoggedIn(string uid)
+		{
+			return players.ContainsKey(uid);
+		}
+
+		public Player this[string uid]
+		{
+			get { return players[uid]; }
 		}
 	}
 }
