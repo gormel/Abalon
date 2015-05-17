@@ -23,8 +23,8 @@ namespace Abalon.Server
 
 			Get["/list"] = p =>
 			{
-				return string.Join(Environment.NewLine,
-					siteController.ConnectedPlayers.Select(pl => pl.Name));
+				return siteController.ConnectedPlayers
+					.Select(pl => new { name = pl.Name }).ToArray();
 			};
 		}
 	}

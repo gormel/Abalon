@@ -20,15 +20,15 @@ namespace Abalon.Server
 			Post["/login"] = par =>
 			{
 				var info = this.Bind<AuthInfo>();
-				var pl = siteController.AddConnectedPlayer(info, (string)Request.Session["Key"]);
-				if (pl == null)
-					return HttpStatusCode.Unauthorized;
+				var pl = siteController.AddConnectedPlayer(info);
+				if (pl == null) { return HttpStatusCode.Unauthorized; }
+				Request.Session["SessionUID"] = pl.UID;
 				return HttpStatusCode.OK;
 			};
 
 			Post["/logout"] = par =>
 			{
-				bool logoutResult = siteController.RemoveDisconnectedPlayer((string)Request.Session["Key"]);
+				bool logoutResult = siteController.RemoveDisconnectedPlayer((string)Request.Session["SessionUID"]);
 				return logoutResult ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
 			};
 		}

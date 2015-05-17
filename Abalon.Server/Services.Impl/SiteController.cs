@@ -16,11 +16,11 @@ namespace Abalon.Server.Services.Impl
 		public IEnumerable<Player> ConnectedPlayers { get { return players.Values; } }
 		public IReadOnlyList<Room> Rooms { get { return rooms; } }
 
-		public Player AddConnectedPlayer(AuthInfo info, string uid)
+		public Player AddConnectedPlayer(AuthInfo info)
 		{
 			//TODO: password check
-			Player result = new Player() {Name = info.Name, UID = uid};
-			players.TryAdd(uid, result);
+			Player result = new Player() { Name = info.Name, UID = GenerateLogID() };
+			players.TryAdd(result.UID, result);
 			return result;
 		}
 

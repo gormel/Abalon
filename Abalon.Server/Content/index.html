@@ -1,10 +1,50 @@
+<!DOCTYPE html>
 <html>
-<body>
-<menu type="toolbar">
-  <li class="new">New</li>
-  <li class="open">Open</li>
-  <li class="save">Save</li>
-  <li class="quit">Quit</li>
-</menu>
-</body>
+    <head>
+        <title>Abalon Server</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="content/js/abalon/abalon.query.js"></script>
+    </head>
+    <body>
+        <form id="loginForm">
+            <label for="username">Username: </label>
+            <input id="username" type="text" placeholder="username" />
+            <label for="password">Password: </label>
+            <input id="password" type="password" />
+            <input type="submit" value="Sign In" />
+        </form>
+        <div class="playerList" style="display: none;">
+            <div>Signed In players:</div>
+        </div>
+        <script>
+            var query;
+
+            $(document).ready(function () {
+                query = new Abalon.Query("/");
+
+                var $loginForm = $("#loginForm"),
+                    $playerList = $(".playerList");
+
+                $loginForm.on('submit', function (e) {
+                    e.preventDefault();
+                    var username = $("#username").val();
+                    var password = $("#password").val();
+                    query.login(username, password)
+                        .success(function () {
+                            $loginForm.hide();
+                            onLoginSuccess();
+                        });
+                });
+
+                function onLoginSuccess() {
+                    query.list(function (players) {
+                        for (var i = 0; i < players.length; i++) {
+                            $("<div class='playerInfo'/>").text(players[i].name).appendTo($playerList);
+                        }
+                        $playerList.show();
+                    });
+                }
+            });
+        </script>
+    </body>
 </html>

@@ -9,6 +9,8 @@ using System.Web;
 using Nancy.Bootstrapper;
 using Nancy.Session;
 using Nancy.TinyIoc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Abalon.Server
 {
@@ -34,9 +36,25 @@ namespace Abalon.Server
 
 	public class Bootstrapper : DefaultNancyBootstrapper
 	{
+		protected override void ConfigureApplicationContainer(TinyIoCContainer container)
+		{
+			base.ConfigureApplicationContainer(container);
+			container.Register<JsonSerializer, CustomJsonSerializer>();
+			container.Register<SiteController>().AsSingleton();
+		}
+
 		protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
 		{
 			CookieBasedSessions.Enable(pipelines);
+		}
+	}
+
+	public class CustomJsonSerializer : JsonSerializer
+	{
+		public CustomJsonSerializer()
+		{
+			this.ContractResolver = new CamelCasePropertyNamesContractResolver();
+			this.Formatting = Formatting.Indented;
 		}
 	}
 }
