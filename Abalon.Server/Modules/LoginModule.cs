@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Abalon.Server.Core;
+using Abalon.Server.Core.Info;
 using Abalon.Server.Services.Impl;
 using Nancy.ModelBinding;
 
@@ -30,6 +31,12 @@ namespace Abalon.Server
 			{
 				bool logoutResult = siteController.RemoveDisconnectedPlayer((string)Request.Session["Key"]);
 				return logoutResult ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
+			};
+
+			Get["/list"] = p =>
+			{
+				return string.Join(Environment.NewLine,
+					siteController.ConnectedPlayers.Select(pl => pl.Name));
 			};
 		}
 	}

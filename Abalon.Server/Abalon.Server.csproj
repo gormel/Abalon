@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Info\RoomInfo.cs" />
     <Compile Include="Modules\LoginModule.cs" />
     <Compile Include="Modules\MainModule.cs" />
     <Compile Include="Core\Player.cs" />
@@ -56,7 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Room.cs" />
     <Compile Include="Modules\RoomModule.cs" />
-    <Compile Include="Core\AuthInfo.cs" />
+    <Compile Include="Core\Info\AuthInfo.cs" />
     <Compile Include="Services.Impl\SiteController.cs" />
   </ItemGroup>
   <ItemGroup>

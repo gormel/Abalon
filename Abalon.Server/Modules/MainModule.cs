@@ -1,11 +1,7 @@
-﻿using Abalon.Server.Services;
-using Nancy;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Net.Mime;
-using System.Web;
 using Abalon.Server.Services.Impl;
+using Nancy;
 
 namespace Abalon.Server
 {
@@ -20,12 +16,6 @@ namespace Abalon.Server
 		public MainClass(SiteController siteController)
 		{
 			Get["/"] = p => Response.AsFile("Content/index.html", "text/html");
-
-			Get["/list"] = p =>
-			{
-				return string.Join(Environment.NewLine,
-					siteController.ConnectedPlayers.Select(pl => pl.Name));
-			};
 		}
 	}
 }
