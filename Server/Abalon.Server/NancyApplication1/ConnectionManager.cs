@@ -1,16 +1,23 @@
-﻿using System;
+﻿using Nancy;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 namespace NancyApplication1
 {
-	public class LoginManager
+	public class LoginModule : NancyModule
 	{
-		MainClass main;
-		public LoginManager(MainClass main)
+		public LoginModule()
 		{
-			this.main = main;
+			Get["/login/{login}"] = p =>
+			{
+				var player = ConnectionRequest(p.login);
+				if (player == null)
+					return "Fail";
+				SiteController.Instance.Value.ConnectedPlayers.Add(player);
+				return player.UID;
+			};
 		}
 
 		Random r = new Random();
@@ -21,22 +28,22 @@ namespace NancyApplication1
 			{
 				uid = r.Next().ToString();
 			}
-			while(main.ConnectedPlayers.Any(p => p.UID == uid));
+			while (SiteController.Instance.Value.ConnectedPlayers.Any(p => p.UID == uid));
 			return uid;
 		}
 
 		public Player ConnectionRequest(string name)
 		{
-			if (main.ConnectedPlayers.Any(p => p.Name == name))
+			if (SiteController.Instance.Value.ConnectedPlayers.Any(p => p.Name == name))
 				return null;
 			return new Player() { Name = name, UID = GenerateUID() };
 		}
 
 		public void LogoutRequest(string uid)
 		{
-			Player requesting = main.ConnectedPlayers.FirstOrDefault(p => p.UID == uid);
+			Player requesting = SiteController.Instance.Value.ConnectedPlayers.FirstOrDefault(p => p.UID == uid);
 			if (requesting != null)
-				main.ConnectedPlayers.Remove(requesting);
+				SiteController.Instance.Value.ConnectedPlayers.Remove(requesting);
 		}
 	}
 }
