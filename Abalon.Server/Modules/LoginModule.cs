@@ -4,50 +4,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Abalon.Server.Core;
+using Abalon.Server.Services.Impl;
+using Nancy.ModelBinding;
 
 namespace Abalon.Server
 {
 	public class LoginModule : NancyModule
 	{
-        readonly ISiteController siteController;
+		readonly SiteController siteController;
 
-		public LoginModule(ISiteController siteController)
+		public LoginModule(SiteController siteController)
 		{
-            this.siteController = siteController;
-			Get["/login/{login}"] = p =>
+			this.siteController = siteController;
+			Post["/login"] = par =>
 			{
-				var player = ConnectionRequest(p.login);
-				if (player == null)
-					return "Fail";
-				siteController.AddConnectedPlayer(player);
-				return player.UID;
+				var info = this.Bind<AuthInfo>();
+				var pl = siteController.AddConnectedPlayer(info, (string)Request.Session["Key"]);
+				if (pl == null)
+					return HttpStatusCode.Unauthorized;
+				return HttpStatusCode.OK;
 			};
-		}
 
-		Random r = new Random();
-		private string GenerateUID()
-		{
-			string uid = "";
-			do
+			Post["/logout"] = par =>
 			{
-				uid = r.Next().ToString();
-			}
-			while (siteController.ConnectedPlayers.Any(p => p.UID == uid));
-			return uid;
-		}
-
-		public Player ConnectionRequest(string name)
-		{
-            if (siteController.ConnectedPlayers.Any(p => p.Name == name))
-				return null;
-			return new Player() { Name = name, UID = GenerateUID() };
-		}
-
-		public void LogoutRequest(string uid)
-		{
-            Player requesting = siteController.ConnectedPlayers.FirstOrDefault(p => p.UID == uid);
-			if (requesting != null)
-                siteController.RemoveDisconnectedPlayer(requesting);
+				bool logoutResult = siteController.RemoveDisconnectedPlayer((string)Request.Session["Key"]);
+				return logoutResult ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
+			};
 		}
 	}
 }

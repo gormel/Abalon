@@ -7,7 +7,9 @@ namespace Abalon.Server
 {
 	public class Room
 	{
-		public Player Player1;
-		public Player Player2;
+		public Player Creator;
+		public Player Guest;
+
+		public string RoomID;
 	}
 }
