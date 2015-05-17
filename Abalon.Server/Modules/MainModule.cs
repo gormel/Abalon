@@ -1,4 +1,5 @@
-﻿using Nancy;
+﻿using Abalon.Server.Services;
+using Nancy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +15,15 @@ namespace Abalon.Server
 
 	public class MainClass : NancyModule
 	{
-		public MainClass()
+		public MainClass(ISiteController siteController)
 		{
 			Get["/"] = p => "hello world";
 
 			Get["/list"] = p =>
-				{
-					if (SiteController.Instance.Value.ConnectedPlayers.Count < 1)
-						return "";
-					return SiteController.Instance.Value.ConnectedPlayers.Select(pl => pl.Name).Aggregate((a, b) => a + Environment.NewLine + b);
-				};
+			{
+                return string.Join(Environment.NewLine,
+                    siteController.ConnectedPlayers.Select(pl => pl.Name));
+			};
 		}
 	}
 }

@@ -56,7 +56,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Room.cs" />
     <Compile Include="Modules\RoomModule.cs" />
-    <Compile Include="Services\SiteController.cs" />
+    <Compile Include="Services.Impl\SiteController.cs" />
+    <Compile Include="Services\ISiteController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

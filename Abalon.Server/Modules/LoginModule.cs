@@ -1,4 +1,5 @@
-﻿using Nancy;
+﻿using Abalon.Server.Services;
+using Nancy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +9,17 @@ namespace Abalon.Server
 {
 	public class LoginModule : NancyModule
 	{
-		public LoginModule()
+        readonly ISiteController siteController;
+
+		public LoginModule(ISiteController siteController)
 		{
+            this.siteController = siteController;
 			Get["/login/{login}"] = p =>
 			{
 				var player = ConnectionRequest(p.login);
 				if (player == null)
 					return "Fail";
-				SiteController.Instance.Value.ConnectedPlayers.Add(player);
+				siteController.AddConnectedPlayer(player);
 				return player.UID;
 			};
 		}
@@ -28,22 +32,22 @@ namespace Abalon.Server
 			{
 				uid = r.Next().ToString();
 			}
-			while (SiteController.Instance.Value.ConnectedPlayers.Any(p => p.UID == uid));
+			while (siteController.ConnectedPlayers.Any(p => p.UID == uid));
 			return uid;
 		}
 
 		public Player ConnectionRequest(string name)
 		{
-			if (SiteController.Instance.Value.ConnectedPlayers.Any(p => p.Name == name))
+            if (siteController.ConnectedPlayers.Any(p => p.Name == name))
 				return null;
 			return new Player() { Name = name, UID = GenerateUID() };
 		}
 
 		public void LogoutRequest(string uid)
 		{
-			Player requesting = SiteController.Instance.Value.ConnectedPlayers.FirstOrDefault(p => p.UID == uid);
+            Player requesting = siteController.ConnectedPlayers.FirstOrDefault(p => p.UID == uid);
 			if (requesting != null)
-				SiteController.Instance.Value.ConnectedPlayers.Remove(requesting);
+                siteController.RemoveDisconnectedPlayer(requesting);
 		}
 	}
 }

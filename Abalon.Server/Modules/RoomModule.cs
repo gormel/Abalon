@@ -12,7 +12,6 @@ namespace Abalon.Server
 		{
 			Get["/room/{uid}"] = p =>
 			{
-
 				return "";
 			};
 		}
