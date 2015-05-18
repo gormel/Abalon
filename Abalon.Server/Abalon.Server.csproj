@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\GameField.cs" />
     <Compile Include="Core\Info\RoomInfo.cs" />
     <Compile Include="Modules\LoginModule.cs" />
     <Compile Include="Modules\MainModule.cs" />
