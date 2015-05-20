@@ -1,2 +1,2 @@
 # Abalon
-Abalon game web implementation.
+Abalone board game web implementation.
